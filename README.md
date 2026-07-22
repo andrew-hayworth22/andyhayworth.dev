@@ -2,5 +2,4 @@
 
 My personal portfolio site.
 
-A SvelteKit app compiled to static assets (one HTML file and one CSS file).
-Shipped to an S3 bucket and served via CloudFront.
+A SvelteKit app that compiles to static assets (one HTML file and one CSS file), ships to an S3 bucket upon pushes/merges to main, and is served via CloudFront. So cheap, simple, and awesome.

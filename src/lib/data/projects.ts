@@ -16,16 +16,9 @@ export const projects: Project[] = [
     {
         title: "critiquefi",
         description:
-            "a social media platform for rating and logging all forms of media from books to video games. binary written in Go and SvelteKit.",
+            "a social media platform for rating and logging all forms of media from books to video games. one binary written in Go and SvelteKit.",
         tags: ["Go", "SvelteKit", "Postgres", "Docker", "Tailwind", "GitHub Actions"],
         githubURL: "https://www.github.com/andrew-hayworth22/critiquefi"
-    },
-    {
-        title: "swagscript",
-        description:
-            "a programming language only the coolest, trendiest developers can use. jk i built this to learn about interpreters and how they work.",
-        tags: ["Go"],
-        githubURL: "https://www.github.com/andrew-hayworth22/swagscript"
     },
     {
         title: "dynastatracker",
@@ -33,6 +26,19 @@ export const projects: Project[] = [
             "a full-stack football statistics application used to track and visualise stats from college football video games.",
         tags: ["Laravel", "MySQL", "Vue.js", "Inertia.js", "Tailwind"],
         githubURL: "https://www.github.com/andrew-hayworth22/dynastatracker"
+    },
+    {
+        title: "andyhayworth.dev",
+        description: "the site you're looking at right now! it's written in sveltekit, compiles to static artifacts, and is served to you via S3 and CloudFront.",
+        tags: ["SvelteKit", "TypeScript", "AWS", "S3", "CloudFront", "GitHub Actions"],
+        githubURL: "https://www.github.com/andrew-hayworth22/andyhayworth.dev",
+    },
+    {
+        title: "swagscript",
+        description:
+            "a programming language only the coolest, trendiest developers can use. jk i built this to learn about interpreters and how they work.",
+        tags: ["Go"],
+        githubURL: "https://www.github.com/andrew-hayworth22/swagscript"
     },
     {
         title: "pylibsrcml",

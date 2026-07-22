@@ -32,6 +32,12 @@ export default defineConfig(
 		}
 	},
 	{
+		files: ['src/lib/components/Project.svelte'],
+		rules: {
+			'svelte/no-navigation-without-resolve': 'off'
+		}
+	},
+	{
 		rules: {}
 	}
 );

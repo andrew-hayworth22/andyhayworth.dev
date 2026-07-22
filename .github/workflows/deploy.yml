@@ -10,7 +10,58 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  check-infra-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for infrastructure changes
+        id: filter
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          elif git diff --quiet "${{ github.event.before }}" "${{ github.sha }}" -- infra/; then
+            echo "infra=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy-infra:
+    needs: check-infra-changes
+    if: needs.check-infra-changes.outputs.infra == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-skip-session-tagging: true
+
+      - name: Deploy infrastructure (CloudFormation)
+        run: |
+          aws cloudformation deploy \
+            --template-file infra/cloudformation.yaml \
+            --stack-name "${{ vars.STACK_NAME }}" \
+            --parameter-overrides \
+              DomainName="${{ vars.DOMAIN_NAME }}" \
+              HostedZoneId="${{ vars.HOSTED_ZONE_ID }}" \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset
+
+  deploy-site:
+    needs: [check-infra-changes, deploy-infra]
+    if: |
+      always() &&
+      (needs.deploy-infra.result == 'success' || needs.deploy-infra.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,17 +85,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-skip-session-tagging: true
-
-      - name: Deploy infrastructure (CloudFormation)
-        run: |
-          aws cloudformation deploy \
-            --template-file infra/cloudformation.yaml \
-            --stack-name "${{ vars.STACK_NAME }}" \
-            --parameter-overrides \
-              DomainName="${{ vars.DOMAIN_NAME }}" \
-              HostedZoneId="${{ vars.HOSTED_ZONE_ID }}" \
-            --capabilities CAPABILITY_IAM \
-            --no-fail-on-empty-changeset
 
       - name: Get stack outputs
         id: stack

@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  One-time account bootstrap: GitHub Actions OIDC provider + deploy role for
+  andrew-hayworth22/andyhayworth.dev. Run this once, manually, with an
+  admin-capable AWS credential. Do NOT run this from the GitHub Actions
+  workflow itself.
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Default: andrew-hayworth22
+  RepoName:
+    Type: String
+    Default: andyhayworth.dev
+
+Conditions:
+  CreateOIDCProvider: !Equals [true, true]
+
+Resources:
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: github-deploy-andyhayworth-dev
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOIDCProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${RepoName}:ref:refs/heads/main'
+      Policies:
+        - PolicyName: site-deploy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: CloudFormation
+                Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:GetTemplate
+                  - cloudformation:ListStackResources
+                Resource: !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/*/*'
+              - Sid: S3Site
+                Effect: Allow
+                Action:
+                  - s3:CreateBucket
+                  - s3:GetBucketPolicy
+                  - s3:PutBucketPolicy
+                  - s3:PutBucketVersioning
+                  - s3:GetBucketVersioning
+                  - s3:PutBucketPublicAccessBlock
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetBucketLocation
+                  - s3:ListBucket
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                Resource:
+                  - 'arn:aws:s3:::*-site'
+                  - 'arn:aws:s3:::*-site/*'
+              - Sid: CloudFront
+                Effect: Allow
+                Action:
+                  - cloudfront:CreateDistribution
+                  - cloudfront:GetDistribution
+                  - cloudfront:UpdateDistribution
+                  - cloudfront:TagResource
+                  - cloudfront:ListTagsForResource
+                  - cloudfront:CreateOriginAccessControl
+                  - cloudfront:GetOriginAccessControl
+                  - cloudfront:UpdateOriginAccessControl
+                  - cloudfront:CreateInvalidation
+                  - cloudfront:GetInvalidation
+                Resource: '*'
+              - Sid: ACM
+                Effect: Allow
+                Action:
+                  - acm:RequestCertificate
+                  - acm:DescribeCertificate
+                  - acm:AddTagsToCertificate
+                  - acm:ListTagsForCertificate
+                  - acm:DeleteCertificate
+                Resource: '*'
+              - Sid: Route53
+                Effect: Allow
+                Action:
+                  - route53:GetHostedZone
+                  - route53:ChangeResourceRecordSets
+                  - route53:ListResourceRecordSets
+                  - route53:GetChange
+                Resource: '*'
+
+Outputs:
+  RoleArn:
+    Value: !GetAtt DeployRole.Arn

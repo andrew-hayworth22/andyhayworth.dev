@@ -4,6 +4,10 @@ Description: >
   andrew-hayworth22/andyhayworth.dev. Run this once, manually, with an
   admin-capable AWS credential. Do NOT run this from the GitHub Actions
   workflow itself.
+#
+# To apply updates (e.g. after adding a permission to the deploy role's policy):
+#   aws cloudformation deploy --template-file infra/bootstrap/github-oidc.yaml \
+#     --stack-name <bootstrap-stack-name> --capabilities CAPABILITY_NAMED_IAM
 
 Parameters:
   GitHubOrg:
@@ -59,6 +63,7 @@ Resources:
                   - cloudformation:ExecuteChangeSet
                   - cloudformation:DeleteChangeSet
                   - cloudformation:GetTemplate
+                  - cloudformation:GetTemplateSummary
                   - cloudformation:ListStackResources
                 Resource: !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/*/*'
               - Sid: S3Site

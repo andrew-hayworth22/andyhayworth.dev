@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { reveal } from '$lib/actions/reveal';
 
 	interface Props {
 		id: string;
@@ -14,7 +15,7 @@
 
 <section {id} class="border-t border-line-1 py-16 max-[720px]:py-12">
 	<div
-		data-reveal
+		use:reveal
 		class="mb-12 flex translate-y-5.5 items-baseline justify-between opacity-0 transition-all duration-700 ease-[cubic-bezier(0.2,0.7,0.3,1)]"
 	>
 		<h2 class="m-0 font-display text-4xl font-bold tracking-tight">
@@ -26,5 +27,5 @@
 		{/if}
 	</div>
 
-    {@render children()}
+	{@render children()}
 </section>

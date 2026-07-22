@@ -12,6 +12,12 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 	<link rel="preload" href={spaceGroteskFont} as="font" type="font/woff2" crossorigin="anonymous" />
-	<link rel="preload" href={jetbrainsMonoFont} as="font" type="font/woff2" crossorigin="anonymous" />
+	<link
+		rel="preload"
+		href={jetbrainsMonoFont}
+		as="font"
+		type="font/woff2"
+		crossorigin="anonymous"
+	/>
 </svelte:head>
 {@render children()}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Project } from '$lib/data/projects';
+	import { reveal } from '$lib/actions/reveal';
 
 	let { project }: { project: Project } = $props();
 </script>
@@ -7,7 +8,7 @@
 <a
 	href={project.githubURL}
 	target="_blank"
-	data-reveal
+	use:reveal
 	class="block translate-y-1.5 rounded-2xl border border-line-2 bg-surface p-7 opacity-0 transition-all duration-700 ease-[cubic-bezier(0.2,0.7,0.3,1)] hover:-translate-y-1 hover:border-mint max-[720px]:p-6"
 >
 	<div class="flex items-center justify-between">

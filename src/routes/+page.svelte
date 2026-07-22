@@ -17,7 +17,11 @@
 </script>
 
 <svelte:head>
-	<title>Andy Hayworth</title>
+	<title>andy hayworth</title>
+	<meta
+		name="description"
+		content="andy hayworth - a senior full-stack software engineer that builds fast, secure, well-architected software solutions. come check out some of my work!"
+	/>
 </svelte:head>
 
 <div class="relative min-h-screen overflow-x-clip bg-ink font-display text-fg">

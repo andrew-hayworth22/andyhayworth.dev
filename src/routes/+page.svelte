@@ -6,6 +6,7 @@
 	import Project from '$lib/components/Project.svelte';
 	import { jobs } from '$lib/data/experience';
 	import { projects } from '$lib/data/projects';
+    import type { Project as ProjectType } from '$lib/data/projects';
 	import { educations } from '$lib/data/education';
 	import Job from '$lib/components/Job.svelte';
 	import Education from '$lib/components/Education.svelte';
@@ -14,6 +15,11 @@
 	import Certifications from '$lib/components/Certifications.svelte';
 	import Contact from '$lib/components/Contact.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ProjectModal from '$lib/components/ProjectModal.svelte';
+
+    let selectedProject: ProjectType | null  = $state(null)
+    const handleProjectModalClose = () => selectedProject = null
+    const handleProjectClick = (project: ProjectType) => selectedProject = project
 </script>
 
 <svelte:head>
@@ -52,7 +58,7 @@
 			{/snippet}
 			<div class="grid grid-cols-2 gap-5 max-[720px]:grid-cols-1">
 				{#each projects as project (project.title)}
-					<Project {project} />
+					<Project onclick={() => handleProjectClick(project)} {project} />
 				{/each}
 			</div>
 		</Section>
@@ -77,3 +83,7 @@
 		<Footer />
 	</main>
 </div>
+
+{#if selectedProject != null}
+    <ProjectModal project={selectedProject} onClose={handleProjectModalClose}/>
+{/if}

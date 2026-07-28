@@ -4,6 +4,7 @@
 	import '@fontsource-variable/jetbrains-mono';
 	import spaceGroteskFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 	import jetbrainsMonoFont from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+	import Analytics from '$lib/components/Analytics.svelte';
 
 	let { children } = $props();
 </script>
@@ -19,4 +20,5 @@
 		crossorigin="anonymous"
 	/>
 </svelte:head>
+<Analytics />
 {@render children()}

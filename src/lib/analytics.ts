@@ -8,6 +8,6 @@ export const enabled = Boolean(import.meta.env.PROD && browser && measurementId)
 export function gtag(...args: unknown[]) {
     if (!enabled) return;
 
-    window.dataLayer ??= [];
+    window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(args);
 }

@@ -5,9 +5,11 @@
 
 	if (enabled) {
 		gtag('js', new Date());
-		gtag('config', measurementId, { send_page_view: false });
+		gtag('config', measurementId);
 
-		afterNavigate(() => {
+		afterNavigate((navigation) => {
+			if (navigation.type === 'enter') return;
+
 			gtag('event', 'page_view', {
 				page_path: page.url.pathname + page.url.search
 			});

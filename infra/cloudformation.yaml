@@ -71,6 +71,9 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: true
+        # CloudFront defaults to http1.1 if unset. Clients that can't negotiate
+        # h2/h3 fall back automatically.
+        HttpVersion: http2and3
         DefaultRootObject: index.html
         Aliases:
           - !Ref DomainName

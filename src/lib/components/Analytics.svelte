@@ -5,7 +5,7 @@
 
 	if (enabled) {
 		gtag('js', new Date());
-		gtag('config', measurementId);
+		gtag('config', measurementId, { transport_type: 'image' });
 
 		afterNavigate((navigation) => {
 			if (navigation.type === 'enter') return;

@@ -1,28 +1,35 @@
 <script lang="ts">
 	import { afterNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import { enabled, gtag, measurementId } from '$lib/analytics';
+	import { tick } from 'svelte';
+	import { configured, enabled, gtag, measurementId } from '$lib/analytics';
+
+	function trackPageView() {
+		gtag('event', 'page_view', {
+			page_location: page.url.href,
+			page_title: document.title
+		});
+	}
 
 	if (enabled) {
 		gtag('js', new Date());
-		gtag('config', measurementId, { send_page_view: false, transport_type: 'image' });
+		gtag('config', measurementId, { send_page_view: false });
 
-		gtag('event', 'page_view', {
-			page_path: page.url.pathname + page.url.search
-		});
+		trackPageView();
 
-		afterNavigate((navigation) => {
+		afterNavigate(async (navigation) => {
 			if (navigation.type === 'enter') return;
 
-			gtag('event', 'page_view', {
-				page_path: page.url.pathname + page.url.search
-			});
+			// Let the new page's <svelte:head><title> flush before reading it.
+			await tick();
+
+			trackPageView();
 		});
 	}
 </script>
 
 <svelte:head>
-	{#if enabled}
+	{#if configured}
 		<script async src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}></script>
 	{/if}
 </svelte:head>

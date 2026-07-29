@@ -8,8 +8,11 @@
 	<img
 		id="hero-headshot"
 		src={headshotURL}
-        alt="headshot"
-        class="w-full h-full object-cover rounded-2xl"
+		alt="Andy Hayworth"
+		width="720"
+		height="720"
+		fetchpriority="high"
+		class="h-full w-full rounded-2xl object-cover"
 	/>
 	<div
 		style="position:absolute; top:-1px; left:20px; transform:translateY(-50%); background:#0f1210; padding:0 8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:oklch(0.82 0.16 150);"

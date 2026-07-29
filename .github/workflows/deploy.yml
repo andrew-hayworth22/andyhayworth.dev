@@ -98,9 +98,26 @@ jobs:
           echo "bucket=$BUCKET" >> "$GITHUB_OUTPUT"
           echo "dist_id=$DIST_ID" >> "$GITHUB_OUTPUT"
 
-      - name: Sync build output to S3
+      # Content-hashed assets first, so freshly-deployed HTML never references a
+      # chunk that hasn't landed yet. The filename changes whenever the contents
+      # do, so these are safe to cache forever.
+      - name: Sync immutable assets to S3
         run: |
-          aws s3 sync ./build "s3://${{ steps.stack.outputs.bucket }}" --delete
+          aws s3 sync ./build/_app/immutable "s3://${{ steps.stack.outputs.bucket }}/_app/immutable" \
+            --delete \
+            --exclude '*.DS_Store' \
+            --cache-control 'public,max-age=31536000,immutable'
+
+      # Everything else (index.html, version.json, favicon, resume.pdf, ...) has
+      # a stable filename, so it must be revalidated on every visit. These are
+      # cheap 304s and carry almost no bytes.
+      - name: Sync unversioned files to S3
+        run: |
+          aws s3 sync ./build "s3://${{ steps.stack.outputs.bucket }}" \
+            --delete \
+            --exclude '_app/immutable/*' \
+            --exclude '*.DS_Store' \
+            --cache-control 'public,max-age=0,must-revalidate'
 
       - name: Invalidate CloudFront cache
         run: |

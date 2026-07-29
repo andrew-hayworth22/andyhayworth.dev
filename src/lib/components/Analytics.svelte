@@ -5,11 +5,9 @@
 
 	if (enabled) {
 		gtag('js', new Date());
-		gtag('config', measurementId, { transport_type: 'image' });
+		gtag('config', measurementId, { send_page_view: false, transport_type: 'image' });
 
-		afterNavigate((navigation) => {
-			if (navigation.type === 'enter') return;
-
+		afterNavigate(() => {
 			gtag('event', 'page_view', {
 				page_path: page.url.pathname + page.url.search
 			});

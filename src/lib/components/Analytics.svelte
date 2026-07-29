@@ -7,7 +7,13 @@
 		gtag('js', new Date());
 		gtag('config', measurementId, { send_page_view: false, transport_type: 'image' });
 
-		afterNavigate(() => {
+		gtag('event', 'page_view', {
+			page_path: page.url.pathname + page.url.search
+		});
+
+		afterNavigate((navigation) => {
+			if (navigation.type === 'enter') return;
+
 			gtag('event', 'page_view', {
 				page_path: page.url.pathname + page.url.search
 			});

@@ -11,6 +11,7 @@
 
 <svelte:head>
 	<link rel="icon" href="/favicon.svg" />
+	<link rel="icon" href="/favicon.ico" sizes="48x48" />
 	<link rel="preload" href={spaceGroteskFont} as="font" type="font/woff2" crossorigin="anonymous" />
 	<link
 		rel="preload"

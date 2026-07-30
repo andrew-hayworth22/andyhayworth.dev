@@ -1,7 +1,7 @@
 <script>
 	import { asset } from '$app/paths';
 	import { contacts } from '$lib/data/contacts';
-	import Headshot from './Headshot.svelte';
+    import Headshot from '$lib/components/ui/Headshot.svelte';
 
 	const resumePath = asset('/resume.pdf');
 </script>

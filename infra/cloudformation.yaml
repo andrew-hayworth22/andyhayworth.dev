@@ -97,8 +97,14 @@ Resources:
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
         CustomErrorResponses:
           - ErrorCode: 404
-            ResponseCode: 200
-            ResponsePagePath: /index.html
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 10
+          # S3 origins restricted to s3:GetObject (no ListBucket) return 403 for
+          # missing keys rather than 404, so it must be mapped the same way.
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
             ErrorCachingMinTTL: 10
 
   DnsRecord:
